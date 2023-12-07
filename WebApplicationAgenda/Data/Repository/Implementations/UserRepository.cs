@@ -62,40 +62,40 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         {
             return await _context.Users.FirstAsync(p => p.UserName == authRequestBody.UserName && p.Password == authRequestBody.Password);
         }
+        /*
+public  User? ValidateUser(AuthenticationRequestBody authRequestBody)
+{
+   throw new NotImplementedException();
+}
 
-        public User? ValidateUser(AuthenticationRequestBody authRequestBody)
-        {
-            throw new NotImplementedException();
-        }
+User? IUserRepository.GetById(int userId)
+{
+   throw new NotImplementedException();
+}
 
-        User? IUserRepository.GetById(int userId)
-        {
-            throw new NotImplementedException();
-        }
+List<User> IUserRepository.GetAll()
+{
+   throw new NotImplementedException();
+}
+//
+void IUserRepository.Create(CreateAndUpdateUser dto)
+{
+   throw new NotImplementedException();
+}
 
-        List<User> IUserRepository.GetAll()
-        {
-            throw new NotImplementedException();
-        }
-        //
-        void IUserRepository.Create(CreateAndUpdateUser dto)
-        {
-            throw new NotImplementedException();
-        }
+public void Update(CreateAndUpdateUser dto)
+{
+   throw new NotImplementedException();
+}
 
-        public void Update(CreateAndUpdateUser dto)
-        {
-            throw new NotImplementedException();
-        }
+void IUserRepository.Delete(int id)
+{
+   throw new NotImplementedException();
+}
 
-        void IUserRepository.Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<User> IUserRepository.ValidateUser(AuthenticationRequestBody authRequestBody)
-        {
-            throw new NotImplementedException();
-        }
+Task<User> IUserRepository.ValidateUser(AuthenticationRequestBody authRequestBody)
+{
+   throw new NotImplementedException();
+}*/
     }
 }

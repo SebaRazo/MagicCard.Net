@@ -5,7 +5,7 @@ namespace WebApplicationAgenda.Data.Repository.Interfaces
 {
     public interface IUserRepository
     {
-        Task <User> ValidateUser(AuthenticationRequestBody authRequestBody);
+        Task <User> Validate(AuthenticationRequestBody authRequestBody);
         Task <User> GetById(int userId);
         Task<List<User>> GetAll();
         Task Create(CreateAndUpdateUser dto);

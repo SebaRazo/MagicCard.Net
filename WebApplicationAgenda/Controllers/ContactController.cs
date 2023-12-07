@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplicationAgenda.Data;
@@ -10,6 +11,7 @@ namespace WebApplicationAgenda.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ContactController : ControllerBase
     {
         private readonly IContactRepository _contactRepository;
@@ -21,14 +23,14 @@ namespace WebApplicationAgenda.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
             return Ok(await _contactRepository.GetAllByUser(userId));
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
             try
@@ -45,9 +47,9 @@ namespace WebApplicationAgenda.Controllers
                     return NotFound();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                    return BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost]
@@ -63,7 +65,7 @@ namespace WebApplicationAgenda.Controllers
 
                 return Created("Created", createContactDto);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -71,7 +73,7 @@ namespace WebApplicationAgenda.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateContact(int id, CreateAndUpdateContact dto)
         {
             try
@@ -91,7 +93,7 @@ namespace WebApplicationAgenda.Controllers
         /// HACER METODO GET PARA CONTACTOS EN LISTA NEGRA
 
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContactById(int id)
         {
             try

@@ -7,7 +7,7 @@ using WebApplicationAgenda.Models.Dtos;
 
 namespace WebApplicationAgenda.Data.Repository.Implementations
 {
-    public class ContactRepository : IContactRepository //como hago para que me deje de dar error
+    public class ContactRepository : IContactRepository 
     {
         private readonly AgendaContext _context;
         private readonly IMapper _mapper;
@@ -41,7 +41,10 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             await _context.SaveChangesAsync();//se guardan los cambios en la base de datos
         }
 
-       
+        public Task<List<Contact>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<List<Contact>> GetAllByUser(int id)
         {
@@ -63,6 +66,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 await _context.SaveChangesAsync();
             }
         }
+        /*
         
         void IContactRepository.Create(CreateAndUpdateContact dto)
         {
@@ -82,7 +86,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         void IContactRepository.Update(CreateAndUpdateContact dto)
         {
             throw new NotImplementedException();
-        }
+        }*/
 
     }
 }

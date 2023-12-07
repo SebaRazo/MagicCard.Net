@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using WebApplicationAgenda.Data;
 using WebApplicationAgenda.Data.Repository.Implementations;
@@ -34,6 +35,8 @@ builder.Services.AddSwaggerGen(setupAction =>
                     Id = "WebApplicationAgendaBearerAuth" } //Tiene que coincidir con el id seteado arriba en la definici�n
                 }, new List<string>() }
     });
+    
+
 });
 
     // Add Context
@@ -58,7 +61,15 @@ builder.Services.AddSwaggerGen(setupAction =>
         }
     );
 
-    var config = new MapperConfiguration(cfg =>
+
+//Cors para que el navegador pueda acceder a los endpoints
+builder.Services.AddCors(options => options.AddPolicy("AllowWebapp",
+                                    builder => builder.AllowAnyOrigin()
+                                              .AllowAnyHeader()
+                                              .AllowAnyMethod()));
+
+
+var config = new MapperConfiguration(cfg =>
     {
         cfg.AddProfile(new ContactProfile());
         cfg.AddProfile(new UserProfile());
@@ -84,6 +95,7 @@ builder.Services.AddSwaggerGen(setupAction =>
         app.UseSwaggerUI();
     }
 
+    app.UseCors("AllowWebapp");
     app.UseHttpsRedirection();
     app.UseAuthentication();
 

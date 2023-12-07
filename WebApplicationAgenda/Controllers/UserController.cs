@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplicationAgenda.Data.Repository.Interfaces;
@@ -8,6 +9,7 @@ namespace WebApplicationAgenda.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -19,7 +21,7 @@ namespace WebApplicationAgenda.Controllers
             _userRepository = userRepository;
         }
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             return Ok(_userRepository.GetAll());
         }
@@ -58,7 +60,7 @@ namespace WebApplicationAgenda.Controllers
             return Created("Created", dto);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUser(int id_user, CreateAndUpdateUser dto)
         {
             try
@@ -78,7 +80,7 @@ namespace WebApplicationAgenda.Controllers
         
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
