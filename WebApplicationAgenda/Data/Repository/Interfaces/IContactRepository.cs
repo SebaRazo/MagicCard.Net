@@ -7,7 +7,7 @@ namespace WebApplicationAgenda.Data.Repository.Interfaces
     {
         Task <List<Contact>> GetAll();
         Task<List<Contact>> GetAllByUser(int id);
-        Task Create(CreateAndUpdateContact dto);
+        Task Create(CreateAndUpdateContact dto, int userId);
         Task Update(int id, CreateAndUpdateContact dto);
         Task Delete(int id); 
 
