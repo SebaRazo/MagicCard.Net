@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplicationAgenda.Data;
+using WebApplicationAgenda.Data.Repository.Interfaces;
 
 namespace WebApplicationAgenda.Controllers
 {
@@ -9,14 +10,21 @@ namespace WebApplicationAgenda.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
-        private readonly AgendaContext _context;
-        private readonly IMapper _mapper; 
-
-        public ContactController(AgendaContext context, IMapper mapper)
+        private readonly IContactRepository _contactRepository;
+        private readonly IUserRepository _userRepository;
+        //inyecta las dependencias 
+        public ContactController(IContactRepository contactRepository, IUserRepository userRepository)
         {
-            _context = context;
-            _mapper = mapper;
+            _contactRepository = contactRepository;
+            _userRepository = userRepository;
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
+            return Ok(await _contactRepository.GetAllByUser(userId));
+        }
+
     }
 }

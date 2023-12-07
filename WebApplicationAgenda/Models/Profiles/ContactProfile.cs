@@ -10,8 +10,7 @@ namespace WebApplicationAgenda.Models.Profiles
         {
             CreateMap<Contact, CreateAndUpdateContact>();
             CreateMap<CreateAndUpdateContact, Contact>();
-            CreateMap<Contact, ContactDto>();
-            CreateMap<ContactDto, Contact>();
+            
         }
     }
 }

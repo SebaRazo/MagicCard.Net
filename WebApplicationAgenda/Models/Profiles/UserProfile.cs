@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using WebApplicationAgenda.Entities;
+using WebApplicationAgenda.Models.Dtos;
 
 namespace WebApplicationAgenda.Models.Profiles
 {
@@ -6,7 +8,10 @@ namespace WebApplicationAgenda.Models.Profiles
     {
         public UserProfile()
         {
-            //CreateMap<>;
+            CreateMap<User, CreateAndUpdateUser>();
+            CreateMap<User, GetUserByIdReponse>();
+
+            CreateMap<CreateAndUpdateUser, User>();
         }
     }
 }

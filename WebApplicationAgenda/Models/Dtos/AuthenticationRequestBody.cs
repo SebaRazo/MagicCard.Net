@@ -4,9 +4,9 @@ namespace WebApplicationAgenda.Models.Dtos
 {
     public class AuthenticationRequestBody
     {
-       /* [Required]
+        [Required]
         public string? UserName { get; set; }
         [Required]
-        public string? Password { get; set; }*/
+        public string? Password { get; set; }
     }
 }
