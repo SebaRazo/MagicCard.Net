@@ -41,14 +41,14 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             await _context.SaveChangesAsync();//se guardan los cambios en la base de datos
         }
 
-        public Task<List<Contact>> GetAll()
+        public async Task<List<Contact>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Contacts.ToListAsync();
         }
 
         public async Task<List<Contact>> GetAllByUser(int id)
         {
-            return await _context.Contacts.Where(c=> c.Id == id).ToListAsync();//filtrar los contactos en base al ID del usuario
+            return await _context.Contacts.Where(c=> c.UserId == id).ToListAsync();//filtrar los contactos en base al ID del usuario
         } //se convierte el resultado de la consulta en una lista de contactos y se retorna
 
         public async Task Update(int id, CreateAndUpdateContact dto)
@@ -66,27 +66,46 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 await _context.SaveChangesAsync();
             }
         }
-        /*
-        
-        void IContactRepository.Create(CreateAndUpdateContact dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IContactRepository.Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        List<Contact> IContactRepository.GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IContactRepository.Update(CreateAndUpdateContact dto)
-        {
-            throw new NotImplementedException();
-        }*/
-
     }
+}//podemos simplificar lo de arriba utilizando automapper
+
+/*
+        public async Task Update(int id, CreateAndUpdateContact dto)
+        {
+        var contactItem = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == id);
+
+         if (contactItem != null)
+            {
+            _mapper.Map(dto, contactItem);
+            await _context.SaveChangesAsync();
+            }
+            }
+
+
+ */
+
+
+
+/*
+
+void IContactRepository.Create(CreateAndUpdateContact dto)
+{
+    throw new NotImplementedException();
 }
+
+void IContactRepository.Delete(int id)
+{
+    throw new NotImplementedException();
+}
+
+List<Contact> IContactRepository.GetAll()
+{
+    throw new NotImplementedException();
+}
+
+void IContactRepository.Update(CreateAndUpdateContact dto)
+{
+    throw new NotImplementedException();
+}*/
+
+

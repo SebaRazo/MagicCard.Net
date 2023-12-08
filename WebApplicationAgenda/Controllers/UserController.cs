@@ -23,7 +23,17 @@ namespace WebApplicationAgenda.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(_userRepository.GetAll());
+            try
+            {
+                var users = await _userRepository.GetAll();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                
+                return BadRequest($"Error: {ex.Message}");
+            }
+             //return Ok(_userRepository.GetAll());
         }
 
         [HttpGet]
@@ -43,7 +53,7 @@ namespace WebApplicationAgenda.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Error: {ex.Message}");
             }
         }
         [HttpPost]
@@ -52,12 +62,13 @@ namespace WebApplicationAgenda.Controllers
             try
             {
                 await _userRepository.Create(dto);
+                return Created("Created", dto);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Error: {ex.Message}");
             }
-            return Created("Created", dto);
+            
         }
 
         [HttpPut("{id}")]
@@ -71,12 +82,13 @@ namespace WebApplicationAgenda.Controllers
                     return NotFound();
                 }
                 await _userRepository.Update(id_user, dto);
+                return NoContent();
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Error: {ex.Message}");
             }
-            return NoContent();
+            
         
         }
 
@@ -98,7 +110,7 @@ namespace WebApplicationAgenda.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Error: {ex.Message}");
             }
         }
 
