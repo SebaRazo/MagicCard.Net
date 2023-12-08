@@ -9,8 +9,9 @@ namespace WebApplicationAgenda.Data.Repository.Interfaces
         Task<List<Contact>> GetAllByUser(int id);
         Task Create(CreateAndUpdateContact dto, int userId);
         Task Update(int id, CreateAndUpdateContact dto);
-        Task Delete(int id); 
-
-        //podriamos hacer uno para los contactos en lista negra Task <List<Contact>> GetBloked(int id)
+        Task Delete(int id);
+        //Metodo para BlockedContacts
+        Task <Contact> BlockContact (int id);
+        Task<List<Contact>> GetBlockedContacts(int userId);
     }
 }

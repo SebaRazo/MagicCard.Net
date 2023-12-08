@@ -24,6 +24,16 @@ namespace WebApplicationAgenda.Data
                 Email = "karenbailapiola@gmail.com",
                 UserName = "karenpiola"
             };
+            User seba = new User()
+            {
+                Id = 3,
+                Name = "Seba",
+                LastName = "Razo",
+                Password = "seba",
+                Email = "sr@gmail.com",
+                UserName = "sr"
+            };
+
             User luis = new User()
             {
                 Id = 2,
@@ -42,6 +52,9 @@ namespace WebApplicationAgenda.Data
                 Description = "Plomero",
                 TelephoneNumber = null,
                 UserId = karen.Id,
+                IsBlocked = true,
+
+                //BlockedByUserId = luis.Id
             };
 
             Contact pepeC = new Contact()
@@ -52,6 +65,7 @@ namespace WebApplicationAgenda.Data
                 Description = "Papa",
                 TelephoneNumber = 422568,
                 UserId = luis.Id,
+                IsBlocked=false,
             };
 
             Contact mariaC = new Contact()
@@ -62,20 +76,85 @@ namespace WebApplicationAgenda.Data
                 Description = "Jefa",
                 TelephoneNumber = null,
                 UserId = karen.Id,
+                IsBlocked=true,
+                //BlockedByUserId = luis.Id
+            };
+
+            Contact juanfer = new Contact()
+            {
+                Id = 4,
+                Name = "Juanfer",
+                CelularNumber = 34156,
+                Description = "?",
+                TelephoneNumber = 42256,
+                UserId = seba.Id,
+                IsBlocked=true,
             };
 
             modelBuilder.Entity<User>().HasData(
-                karen, luis);
+                karen, luis, seba);
 
             modelBuilder.Entity<Contact>().HasData(
-                 jaimitoC, pepeC, mariaC
+                 jaimitoC, pepeC, mariaC, juanfer
                  );
 
-            modelBuilder.Entity<User>()
+            /*modelBuilder.Entity<User>()
               .HasMany<Contact>(u => u.Contacts)
-              .WithOne(c => c.User);
+              .WithOne(c => c.User);*/ //como estaba
+
+
+            //nuevo
+            modelBuilder.Entity<User>()
+            .HasMany(u => u.Contacts)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+            .HasMany(u => u.BlockedContacts)
+            .WithOne()
+            .HasForeignKey(c => c.BlockedByUserId) // Clave foránea para el usuario que bloqueó el contacto
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+
+            modelBuilder.Entity<Contact>()
+                .Property(c => c.IsBlocked)
+                .HasColumnName("IsBlocked");
+
+
+
+
+
 
             base.OnModelCreating(modelBuilder);
         }
     }
 }
+/*//ver esto
+            modelBuilder.Entity<Contact>()
+            .Property(c => c.IsBlocked)
+            .HasColumnName("IsBlocked");
+            //ver esto
+            modelBuilder.Entity<User>()
+              .HasMany<Contact>(u => u.BlockedContacts)
+              .WithOne(c=>c.User)
+              .HasForeignKey(c => c.UserId)
+              ;*/
+/*
+ 
+  modelBuilder.Entity<User>()
+        .HasMany(u => u.Contacts)
+        .WithOne(c => c.User)
+        .HasForeignKey(c => c.UserId);
+
+    modelBuilder.Entity<User>()
+        .HasMany(u => u.BlockedContacts)
+        .WithOne()  // No se especifica la propiedad de navegación en Contact
+        .HasForeignKey(c => c.BlockedByUserId); // Utiliza la misma clave foránea que en Contact
+
+    modelBuilder.Entity<Contact>()
+        .Property(c => c.IsBlocked)
+        .HasColumnName("IsBlocked");
+ 
+ */

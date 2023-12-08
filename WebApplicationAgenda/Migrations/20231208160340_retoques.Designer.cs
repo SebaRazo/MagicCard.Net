@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationAgenda.Data;
 
@@ -11,9 +12,10 @@ using WebApplicationAgenda.Data;
 namespace WebApplicationAgenda.Migrations
 {
     [DbContext(typeof(AgendaContext))]
-    partial class AgendaContextModelSnapshot : ModelSnapshot
+    [Migration("20231208160340_retoques")]
+    partial class retoques
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,15 +32,11 @@ namespace WebApplicationAgenda.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("BlockedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CelularNumber")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsBlocked");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -50,11 +48,14 @@ namespace WebApplicationAgenda.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BlockedByUserId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Contacts");
 
@@ -63,7 +64,7 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 1,
                             CelularNumber = 341457896,
-                            IsBlocked = true,
+                            IsBlocked = false,
                             Name = "Jaimito",
                             UserId = 1
                         },
@@ -80,18 +81,9 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 3,
                             CelularNumber = 11425789,
-                            IsBlocked = true,
+                            IsBlocked = false,
                             Name = "Maria",
                             UserId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CelularNumber = 34156,
-                            IsBlocked = true,
-                            Name = "Juanfer",
-                            TelephoneNumber = 42256,
-                            UserId = 3
                         });
                 });
 
@@ -159,16 +151,15 @@ namespace WebApplicationAgenda.Migrations
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
                 {
-                    b.HasOne("WebApplicationAgenda.Entities.User", null)
-                        .WithMany("BlockedContacts")
-                        .HasForeignKey("BlockedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("WebApplicationAgenda.Entities.User", "User")
                         .WithMany("Contacts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("WebApplicationAgenda.Entities.User", null)
+                        .WithMany("BlockedContacts")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });

@@ -66,6 +66,37 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<List<Contact>> GetBlockedContacts(int userId)
+        {
+            // Obtener la lista de contactos bloqueados para un usuario específico
+            var blockedContacts = await _context.Contacts
+                .Where(c => c.UserId == userId && c.IsBlocked)
+                .ToListAsync();
+
+            return blockedContacts;
+        }
+
+        public async Task<Contact> BlockContact(int id)
+        {
+            var contact = _context.Contacts.FirstOrDefault(c => c.Id == id && !c.IsBlocked);
+
+            if (contact == null)
+            {
+                // Manejar el caso en el que no se encuentra el contacto
+                throw new InvalidOperationException($"No se encontró un contacto con Id {id} que no esté bloqueado.");
+            }
+
+            // Marcar el contacto como bloqueado
+            contact.IsBlocked = true;
+
+            // Guardar los cambios en la base de datos
+            await _context.SaveChangesAsync();
+
+            // Devolver el contacto actualizado
+            return contact;
+        }
+
+
     }
 }//podemos simplificar lo de arriba utilizando automapper
 

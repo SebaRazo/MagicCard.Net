@@ -91,7 +91,7 @@ namespace WebApplicationAgenda.Controllers
 
 
         /// HACER METODO GET PARA CONTACTOS EN LISTA NEGRA
-
+           
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContactById(int id)
@@ -107,5 +107,29 @@ namespace WebApplicationAgenda.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("blocked")]
+        public async Task<IActionResult> GetBlockedContacts()
+        {
+            try
+            {
+                int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
+                var blockedContacts = await _contactRepository.GetBlockedContacts(userId);
+                return Ok(blockedContacts);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
+        /*
+        [HttpGet("blocked-contacts")]
+        public async Task<IActionResult> GetBlockedContacts()
+        {
+            int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
+            var blockedContacts = await _userRepository.GetBlockedContacts(userId);
+            return Ok(blockedContacts);
+        }*/
     }
 }
