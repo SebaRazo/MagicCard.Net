@@ -76,7 +76,7 @@ namespace WebApplicationAgenda.Controllers
         {
             try
             {
-                var userItem= await _userRepository.GetById(id_user);
+                var userItem= await _userRepository.GetById(id_user);//podria utilizar el UserExists
                 if(userItem == null)
                 {
                     return NotFound();

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApplicationAgenda.Data;
 using WebApplicationAgenda.Data.Repository.Interfaces;
 using WebApplicationAgenda.Entities;
@@ -16,18 +17,22 @@ namespace WebApplicationAgenda.Controllers
     {
         private readonly IContactRepository _contactRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
         //inyecta las dependencias 
-        public ContactController(IContactRepository contactRepository, IUserRepository userRepository)
+        public ContactController(IContactRepository contactRepository, IUserRepository userRepository, IMapper mapper)
         {
             _contactRepository = contactRepository;
             _userRepository = userRepository;
+            _mapper = mapper;
+
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
-            return Ok(await _contactRepository.GetAllByUser(userId));
+            var contacts= await _contactRepository.GetAll(userId);
+            return Ok(contacts); 
         }
 
         [HttpGet("{id}")]
@@ -88,9 +93,6 @@ namespace WebApplicationAgenda.Controllers
 
         }
 
-
-
-        /// HACER METODO GET PARA CONTACTOS EN LISTA NEGRA
            
 
         [HttpDelete("{id}")]
@@ -108,28 +110,177 @@ namespace WebApplicationAgenda.Controllers
             return NoContent();
         }
 
+
         [HttpGet("blocked")]
-        public async Task<IActionResult> GetBlockedContacts()
+        public async Task<IActionResult> GetAllBlockedByCurrentUser()
         {
-            try
+            try 
+            { 
+            //var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
+
+            var contacts = await _contactRepository.FindAllBlockedByUserWithCalls(userId);
+            if (contacts == null)
             {
-                int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
-                var blockedContacts = await _contactRepository.GetBlockedContacts(userId);
-                return Ok(blockedContacts);
+                // Manejar el caso en el que no se obtienen contactos bloqueados
+                return NotFound("No se encontraron contactos bloqueados.");
             }
-            catch(Exception ex)
+            var blockedContactDtos = _mapper.Map<List<BlockedContactWithCallInfoDto>>(contacts);//System.NullReferenceException: 'Object reference not set to an instance of an object.'
+            return Ok(blockedContactDtos);
+            }
+            catch (Exception ex)
             {
-                return BadRequest($"Error: {ex.Message}");
+                return BadRequest(ex.Message);
             }
         }
 
-        /*
-        [HttpGet("blocked-contacts")]
-        public async Task<IActionResult> GetBlockedContacts()
+        [HttpPost("block/{id}")]
+        public async Task<IActionResult> BlockContact(int id)
         {
-            int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
-            var blockedContacts = await _userRepository.GetBlockedContacts(userId);
-            return Ok(blockedContacts);
-        }*/
+            try
+            {
+                _contactRepository.BlockContact(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost("unblock/{id}")]
+        public async Task<IActionResult> UnblockContact(int id)
+        {
+            try
+            {
+                _contactRepository.UnblockContact(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("getcall/{contactId}")]
+        public async Task<IActionResult> GetCallByContactId(int contactId)
+        {
+            var call = await _contactRepository.GetCallByContactId(contactId);
+
+            if (call == null)
+            {
+                return NotFound("No se encontró ninguna llamada con el ID de contacto proporcionado.");
+            }
+
+            var callInfoDto = _mapper.Map(call, new CallInfoDto());//<CallInfoDto>(call);//System.NullReferenceException: 'Object reference not set to an instance of an object.'
+            if (callInfoDto == null)
+            {
+               
+                return BadRequest("Error al mapear la llamada a CallInfoDto.");
+            }
+
+
+            return Ok(callInfoDto);
+        }
+
+
+        [HttpDelete("deletecalls/{contactId}")]
+        public async Task<IActionResult> DeleteCallsByContactId(int contactId)
+        {
+            try
+            {
+                _contactRepository.DeleteCallsByContactId(contactId);
+                return Ok("Se eliminaron las llamadas asociadas al ID de contacto proporcionado.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
+
+
+//AGREGADO NUEVO
+
+
+
+/*[HttpGet("block/{id}")]//borrar posiblemente
+public async Task<IActionResult> BlockContact(int id)
+{
+    try
+    {
+        int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
+        var blockedContact = await _contactRepository.BlockContact(id);
+
+        // Mapear la entidad Contact a un DTO
+        var blockedContactDTO = new CreateAndUpdateContact
+        {
+            Name = blockedContact.Name,
+            CelularNumber = blockedContact.CelularNumber,
+            TelephoneNumber = blockedContact.TelephoneNumber,
+            Description = blockedContact.Description,
+            User = blockedContact.User,
+            IsBlocked = blockedContact.IsBlocked
+        };
+
+        return  Ok(blockedContactDTO);
+    }
+    catch (Exception ex)
+    {
+        return BadRequest($"Error al bloquear el contacto: {ex.Message}");
+    }
+}*/
+
+
+
+
+
+
+
+
+//REVISAR
+
+/*[HttpGet("blocked")]//borrar posiblemente
+public async Task<IActionResult> GetBlockedContacts()
+{
+    try
+    {
+        int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
+        var blockedContacts = await _contactRepository.GetBlockedContacts(userId);
+
+        //
+        var blockedContactsDTO = blockedContacts
+            .Where(contact=>contact.IsBlocked)
+            .Select(contact => new CreateAndUpdateContact
+        {
+            Name = contact.Name,
+            CelularNumber = contact.CelularNumber,
+            TelephoneNumber = contact.TelephoneNumber,
+            Description = contact.Description,
+            User = contact.User,
+            IsBlocked = contact.IsBlocked
+        }).ToList();
+
+
+        return Ok(blockedContactsDTO);
+    }
+    catch(Exception ex)
+    {
+        return BadRequest($"Error: {ex.Message}");
+    }
+}*/
+

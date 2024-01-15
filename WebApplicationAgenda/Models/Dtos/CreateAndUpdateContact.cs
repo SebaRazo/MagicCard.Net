@@ -11,5 +11,6 @@ namespace WebApplicationAgenda.Models.Dtos
         public int? TelephoneNumber { get; set; }
         public string Description = String.Empty;
         public User? User;
+        public bool IsBlocked { get; set; }
     }
 }

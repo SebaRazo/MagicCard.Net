@@ -16,6 +16,7 @@ namespace WebApplicationAgenda.Entities
         [Required]
         public string UserName { get; set; }
         public ICollection<Contact> Contacts { get; set; }// Colección de contactos asociados a este User
-        public ICollection<Contact> BlockedContacts { get; set; }// Colección de contactos bloqueados asociados a este User
+
+        //public ICollection<Contact> BlockedContacts { get; set; }// Colección de contactos bloqueados asociados a este User
     }
 }

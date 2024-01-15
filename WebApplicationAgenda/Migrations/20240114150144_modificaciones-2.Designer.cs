@@ -12,8 +12,8 @@ using WebApplicationAgenda.Data;
 namespace WebApplicationAgenda.Migrations
 {
     [DbContext(typeof(AgendaContext))]
-    [Migration("20231208212013_prueba2")]
-    partial class prueba2
+    [Migration("20240114150144_modificaciones-2")]
+    partial class modificaciones2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,39 @@ namespace WebApplicationAgenda.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Call", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ContactId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CountCall")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeCall")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.ToTable("Calls");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            ContactId = 1,
+                            CountCall = 2,
+                            TimeCall = new DateTime(2024, 1, 14, 11, 1, 44, 486, DateTimeKind.Local).AddTicks(4085)
+                        });
+                });
+
             modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
                 {
                     b.Property<int>("Id")
@@ -32,15 +65,15 @@ namespace WebApplicationAgenda.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("BlockedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CelularNumber")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsBlocked");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -54,8 +87,6 @@ namespace WebApplicationAgenda.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BlockedByUserId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Contacts");
@@ -65,7 +96,8 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 1,
                             CelularNumber = 341457896,
-                            IsBlocked = true,
+                            Description = "Plomero",
+                            IsBlocked = false,
                             Name = "Jaimito",
                             UserId = 1
                         },
@@ -73,6 +105,7 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 2,
                             CelularNumber = 34156978,
+                            Description = "Papa",
                             IsBlocked = false,
                             Name = "Pepe",
                             TelephoneNumber = 422568,
@@ -82,7 +115,8 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 3,
                             CelularNumber = 11425789,
-                            IsBlocked = true,
+                            Description = "Jefa",
+                            IsBlocked = false,
                             Name = "Maria",
                             UserId = 1
                         },
@@ -90,7 +124,8 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 4,
                             CelularNumber = 34156,
-                            IsBlocked = true,
+                            Description = "?",
+                            IsBlocked = false,
                             Name = "Juanfer",
                             TelephoneNumber = 42256,
                             UserId = 3
@@ -159,26 +194,35 @@ namespace WebApplicationAgenda.Migrations
                         });
                 });
 
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Call", b =>
+                {
+                    b.HasOne("WebApplicationAgenda.Entities.Contact", "Contact")
+                        .WithMany("Calls")
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contact");
+                });
+
             modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
                 {
-                    b.HasOne("WebApplicationAgenda.Entities.User", null)
-                        .WithMany("BlockedContacts")
-                        .HasForeignKey("BlockedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("WebApplicationAgenda.Entities.User", "User")
                         .WithMany("Contacts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
+                {
+                    b.Navigation("Calls");
+                });
+
             modelBuilder.Entity("WebApplicationAgenda.Entities.User", b =>
                 {
-                    b.Navigation("BlockedContacts");
-
                     b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618

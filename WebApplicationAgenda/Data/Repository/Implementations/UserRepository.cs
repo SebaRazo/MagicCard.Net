@@ -28,7 +28,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             var userItem = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);//consulta asincrónica para obtener el primer usuario con el ID proporcionado
             var user_update = dto;
 
-            if(userItem!= null)//verifica si se encontró un usuario con el ID proporcionado
+            if (userItem != null)//verifica si se encontró un usuario con el ID proporcionado
             {
                 userItem.Name = user_update.Name;
                 userItem.LastName = user_update.LastName;
@@ -58,45 +58,15 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         }
 
 
-        public async Task<User?> Validate(AuthenticationRequestBody authRequestBody)
+        public async Task<User> Validate(AuthenticationRequestBody authRequestBody)
         {
             return await _context.Users.FirstAsync(p => p.UserName == authRequestBody.UserName && p.Password == authRequestBody.Password);
+        }
+
+        public async Task<bool> UserExists(int userId)
+        {
+            return await _context.Users.AnyAsync(u => u.Id == userId);
         }
     }
 }
 
-/*
-public  User? ValidateUser(AuthenticationRequestBody authRequestBody)
-{
-throw new NotImplementedException();
-}
-
-User? IUserRepository.GetById(int userId)
-{
-throw new NotImplementedException();
-}
-
-List<User> IUserRepository.GetAll()
-{
-throw new NotImplementedException();
-}
-//
-void IUserRepository.Create(CreateAndUpdateUser dto)
-{
-throw new NotImplementedException();
-}
-
-public void Update(CreateAndUpdateUser dto)
-{
-throw new NotImplementedException();
-}
-
-void IUserRepository.Delete(int id)
-{
-throw new NotImplementedException();
-}
-
-Task<User> IUserRepository.ValidateUser(AuthenticationRequestBody authRequestBody)
-{
-throw new NotImplementedException();
-}*/

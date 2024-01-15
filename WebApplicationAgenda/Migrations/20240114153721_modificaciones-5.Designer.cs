@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationAgenda.Data;
 
@@ -11,9 +12,10 @@ using WebApplicationAgenda.Data;
 namespace WebApplicationAgenda.Migrations
 {
     [DbContext(typeof(AgendaContext))]
-    partial class AgendaContextModelSnapshot : ModelSnapshot
+    [Migration("20240114153721_modificaciones-5")]
+    partial class modificaciones5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,6 +46,15 @@ namespace WebApplicationAgenda.Migrations
                     b.HasIndex("ContactId");
 
                     b.ToTable("Calls");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            ContactId = 1,
+                            CountCall = 2,
+                            TimeCall = new DateTime(2024, 1, 14, 11, 37, 21, 215, DateTimeKind.Local).AddTicks(2646)
+                        });
                 });
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>

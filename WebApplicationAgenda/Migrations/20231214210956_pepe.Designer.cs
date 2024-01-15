@@ -12,8 +12,8 @@ using WebApplicationAgenda.Data;
 namespace WebApplicationAgenda.Migrations
 {
     [DbContext(typeof(AgendaContext))]
-    [Migration("20231208212404_prueba3")]
-    partial class prueba3
+    [Migration("20231214210956_pepe")]
+    partial class pepe
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,15 +32,15 @@ namespace WebApplicationAgenda.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("BlockedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CelularNumber")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsBlocked");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -54,8 +54,6 @@ namespace WebApplicationAgenda.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BlockedByUserId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Contacts");
@@ -65,6 +63,7 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 1,
                             CelularNumber = 341457896,
+                            Description = "Plomero",
                             IsBlocked = true,
                             Name = "Jaimito",
                             UserId = 1
@@ -73,6 +72,7 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 2,
                             CelularNumber = 34156978,
+                            Description = "Papa",
                             IsBlocked = false,
                             Name = "Pepe",
                             TelephoneNumber = 422568,
@@ -82,6 +82,7 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 3,
                             CelularNumber = 11425789,
+                            Description = "Jefa",
                             IsBlocked = true,
                             Name = "Maria",
                             UserId = 1
@@ -90,6 +91,7 @@ namespace WebApplicationAgenda.Migrations
                         {
                             Id = 4,
                             CelularNumber = 34156,
+                            Description = "?",
                             IsBlocked = true,
                             Name = "Juanfer",
                             TelephoneNumber = 42256,
@@ -161,11 +163,6 @@ namespace WebApplicationAgenda.Migrations
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
                 {
-                    b.HasOne("WebApplicationAgenda.Entities.User", null)
-                        .WithMany("BlockedContacts")
-                        .HasForeignKey("BlockedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("WebApplicationAgenda.Entities.User", "User")
                         .WithMany("Contacts")
                         .HasForeignKey("UserId")
@@ -177,8 +174,6 @@ namespace WebApplicationAgenda.Migrations
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.User", b =>
                 {
-                    b.Navigation("BlockedContacts");
-
                     b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618

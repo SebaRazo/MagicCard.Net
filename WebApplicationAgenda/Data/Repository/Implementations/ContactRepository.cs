@@ -25,15 +25,17 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 Description = dto.Description,
                 Name = dto.Name,
                 TelephoneNumber = dto.TelephoneNumber,
-                UserId = userId
+                UserId = userId,
+                IsBlocked = false
+
 
             };
             await _context.Contacts.AddAsync(new_contact);//Se agrega el nuevo contacto al contexto de la base de datos de manera asincrónica 
             await _context.SaveChangesAsync();
+            CreateCall(new_contact.Id);//
 
         }
 
-        
 
         public async Task Delete(int id)
         {
@@ -41,8 +43,11 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             await _context.SaveChangesAsync();//se guardan los cambios en la base de datos
         }
 
-        public async Task<List<Contact>> GetAll()
+
+
+        public async Task<List<Contact>> GetAll(int userId)
         {
+            
             return await _context.Contacts.ToListAsync();
         }
 
@@ -66,7 +71,11 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<List<Contact>> GetBlockedContacts(int userId)
+
+
+
+
+        public async Task<List<Contact>> GetBlockedContacts(int userId)//ver
         {
             // Obtener la lista de contactos bloqueados para un usuario específico
             var blockedContacts = await _context.Contacts
@@ -76,7 +85,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             return blockedContacts;
         }
 
-        public async Task<Contact> BlockContact(int id)
+        public async Task BlockContact(int id)
         {
             var contact = _context.Contacts.FirstOrDefault(c => c.Id == id && !c.IsBlocked);
 
@@ -93,50 +102,88 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             await _context.SaveChangesAsync();
 
             // Devolver el contacto actualizado
-            return contact;
+            //return contact;
+        }
+        public async Task UnblockContact(int id)
+        {
+            var contact = _context.Contacts.FirstOrDefault(c => c.Id == id && c.IsBlocked);
+            if(contact !=null)
+            {
+                contact.IsBlocked = false;
+                await _context.SaveChangesAsync(); 
+            }
+        }
+
+        public async Task<List<Contact>> FindAllBlockedByUser(int userId)
+        {
+            return await _context.Contacts
+                .Where(c => c.UserId == userId && c.IsBlocked)
+                .ToListAsync();
+        }
+
+        public async Task<List<Contact>> FindAllNotBlockedByUser(int userId)
+        {
+            return await _context.Contacts
+                .Where(c => c.UserId == userId && !c.IsBlocked)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+        }
+
+        public async Task<List<Contact>> FindAllBlockedByUserWithCalls(int userId)
+        {
+            var contacts = await _context.Contacts
+                .Include(c => c.Calls)
+                .Where(c => c.UserId == userId && c.IsBlocked)
+                .ToListAsync();
+
+            // Ordenar la lista de contactos por la cantidad total de llamadas en orden descendente
+            contacts = contacts.OrderByDescending(c => c.Calls.Sum(call => call.CountCall)).ToList();
+
+            return contacts;
+
+
+
+            /* return await _context.Contacts
+                 .Include(c => c.Calls)
+                 .Where(c => c.UserId == userId && c.IsBlocked)
+                 .OrderByDescending(c => c.Calls.Sum(call=>call.CountCall)//CountCall)
+                 .ToListAsync();*/
+        }
+
+        public async Task CreateCall(int contactId)
+        {
+            var call = new Call
+            {
+                ContactId = contactId,
+                CountCall = new Random().Next(1, 101),
+                TimeCall = DateTime.Now
+            };
+
+            _context.Calls.Add(call);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Call> GetCallByContactId(int contactId)
+        {
+            return await _context.Calls
+                .FirstOrDefaultAsync(c => c.ContactId == contactId);
+        }
+
+        public async Task DeleteCallsByContactId(int contactId)
+        {
+            var calls = await _context.Calls
+                .Where(c => c.ContactId == contactId)
+                .ToListAsync();
+
+            _context.Calls.RemoveRange(calls);
+            await _context.SaveChangesAsync();
         }
 
 
     }
-}//podemos simplificar lo de arriba utilizando automapper
-
-/*
-        public async Task Update(int id, CreateAndUpdateContact dto)
-        {
-        var contactItem = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == id);
-
-         if (contactItem != null)
-            {
-            _mapper.Map(dto, contactItem);
-            await _context.SaveChangesAsync();
-            }
-            }
-
-
- */
-
-
-
-/*
-
-void IContactRepository.Create(CreateAndUpdateContact dto)
-{
-    throw new NotImplementedException();
 }
 
-void IContactRepository.Delete(int id)
-{
-    throw new NotImplementedException();
-}
 
-List<Contact> IContactRepository.GetAll()
-{
-    throw new NotImplementedException();
-}
 
-void IContactRepository.Update(CreateAndUpdateContact dto)
-{
-    throw new NotImplementedException();
-}*/
 
 

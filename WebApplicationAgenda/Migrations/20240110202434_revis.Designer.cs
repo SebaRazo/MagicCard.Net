@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationAgenda.Data;
 
@@ -11,9 +12,10 @@ using WebApplicationAgenda.Data;
 namespace WebApplicationAgenda.Migrations
 {
     [DbContext(typeof(AgendaContext))]
-    partial class AgendaContextModelSnapshot : ModelSnapshot
+    [Migration("20240110202434_revis")]
+    partial class revis
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +43,8 @@ namespace WebApplicationAgenda.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId");
+                    b.HasIndex("ContactId")
+                        .IsUnique();
 
                     b.ToTable("Calls");
                 });
@@ -86,7 +89,7 @@ namespace WebApplicationAgenda.Migrations
                             Id = 1,
                             CelularNumber = 341457896,
                             Description = "Plomero",
-                            IsBlocked = false,
+                            IsBlocked = true,
                             Name = "Jaimito",
                             UserId = 1
                         },
@@ -105,7 +108,7 @@ namespace WebApplicationAgenda.Migrations
                             Id = 3,
                             CelularNumber = 11425789,
                             Description = "Jefa",
-                            IsBlocked = false,
+                            IsBlocked = true,
                             Name = "Maria",
                             UserId = 1
                         },
@@ -114,7 +117,7 @@ namespace WebApplicationAgenda.Migrations
                             Id = 4,
                             CelularNumber = 34156,
                             Description = "?",
-                            IsBlocked = false,
+                            IsBlocked = true,
                             Name = "Juanfer",
                             TelephoneNumber = 42256,
                             UserId = 3
@@ -186,8 +189,8 @@ namespace WebApplicationAgenda.Migrations
             modelBuilder.Entity("WebApplicationAgenda.Entities.Call", b =>
                 {
                     b.HasOne("WebApplicationAgenda.Entities.Contact", "Contact")
-                        .WithMany("Calls")
-                        .HasForeignKey("ContactId")
+                        .WithOne("Call")
+                        .HasForeignKey("WebApplicationAgenda.Entities.Call", "ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -199,7 +202,7 @@ namespace WebApplicationAgenda.Migrations
                     b.HasOne("WebApplicationAgenda.Entities.User", "User")
                         .WithMany("Contacts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -207,7 +210,8 @@ namespace WebApplicationAgenda.Migrations
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
                 {
-                    b.Navigation("Calls");
+                    b.Navigation("Call")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.User", b =>

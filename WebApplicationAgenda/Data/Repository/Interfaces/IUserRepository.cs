@@ -11,6 +11,6 @@ namespace WebApplicationAgenda.Data.Repository.Interfaces
         Task Create(CreateAndUpdateUser dto);
         Task Update(int id_user,CreateAndUpdateUser dto);
         Task Delete(int id);
-        //Task GetBlockedContacts(int userId);
+        Task<bool>UserExists(int userId);
     }
 }
