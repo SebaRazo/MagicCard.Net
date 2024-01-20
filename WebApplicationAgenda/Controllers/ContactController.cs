@@ -62,7 +62,7 @@ namespace WebApplicationAgenda.Controllers
         {
             try
             {
-
+                //IMPORTANTE USE.CLAIMS
                 int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
                 await _contactRepository.Create(createContactDto, userId);
 
