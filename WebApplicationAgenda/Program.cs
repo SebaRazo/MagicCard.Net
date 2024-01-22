@@ -63,12 +63,35 @@ builder.Services.AddSwaggerGen(setupAction =>
 
 
 //Cors para que el navegador pueda acceder a los endpoints
-builder.Services.AddCors(options => options.AddPolicy(name: "FE-Contacts",
+/*builder.Services.AddCors(options => options.AddPolicy(name: "FE-Contacts",
     policy => {
         policy.WithOrigins("http://localhost:4200")
                .AllowAnyMethod()
                .AllowAnyHeader();
-    }));
+    }));*/
+
+
+ builder.Services.AddCors(options =>
+      {
+          options.AddPolicy(
+              name: "AllowOrigin",
+              builder =>
+              {
+                  builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+              });
+      });
+
+ 
+ 
+ 
+
+
+
+
+
+
 
 
 
@@ -105,7 +128,9 @@ var config = new MapperConfiguration(cfg =>
         app.UseSwaggerUI();
     }
 
-    app.UseCors("AllowWebapp");
+    app.UseCors("AllowOrigin");
+
+// app.UseCors("AllowWebapp");
     app.UseHttpsRedirection();
     app.UseAuthentication();
 
