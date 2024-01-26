@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WebApplicationAgenda.Entities
 {
@@ -13,6 +14,7 @@ namespace WebApplicationAgenda.Entities
         public int ContactId { get; set; }
 
         [ForeignKey("ContactId")]
+        [JsonIgnore]
         public Contact Contact { get; set; }
 
         public int CountCall { get; set; }

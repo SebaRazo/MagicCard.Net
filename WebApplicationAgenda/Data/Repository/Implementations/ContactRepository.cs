@@ -32,15 +32,21 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             };
             await _context.Contacts.AddAsync(new_contact);//Se agrega el nuevo contacto al contexto de la base de datos de manera asincrónica 
             await _context.SaveChangesAsync();
-            CreateCall(new_contact.Id);//
+            
+            await CreateCall(new_contact.Id);
 
         }
 
 
         public async Task Delete(int id)
         {
-            _context.Contacts.Remove(await _context.Contacts.SingleAsync(c => c.Id == id));//consulta asincrónica para encontrar el contacto en la bd con el ID proporcionado
-            await _context.SaveChangesAsync();//se guardan los cambios en la base de datos
+            var contact =await _context.Contacts.SingleAsync(c => c.Id == id);//consulta asincrónica para encontrar el contacto en la bd con el ID proporcionado
+            if (contact != null)
+            {
+                _context.Contacts.Remove(contact);
+                await _context.SaveChangesAsync();//se guardan los cambios en la base de datos
+                
+            }
         }
 
 
@@ -48,7 +54,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         public async Task<List<Contact>> GetAll(int userId)
         {
             
-            return await _context.Contacts.ToListAsync();
+            return await _context.Contacts.Where(x => x.UserId == userId).Include(x => x.Calls).ToListAsync();
         }
 
         public async Task<List<Contact>> GetAllByUser(int id)
