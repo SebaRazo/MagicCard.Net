@@ -139,7 +139,7 @@ namespace WebApplicationAgenda.Controllers
         {
             try
             {
-                _contactRepository.BlockContact(id);
+                await _contactRepository.BlockContact(id);
                 return Ok();
             }
             catch (Exception ex)
@@ -154,7 +154,7 @@ namespace WebApplicationAgenda.Controllers
         {
             try
             {
-                _contactRepository.UnblockContact(id);
+                await _contactRepository.UnblockContact(id);
                 return Ok();
             }
             catch (Exception ex)
