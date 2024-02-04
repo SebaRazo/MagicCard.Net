@@ -23,17 +23,7 @@ namespace WebApplicationAgenda.Models.Profiles
                        string.Empty
                 });
             });
-            //revisar bien esto
-
-
-
-            /*
-            CreateMap<Contact, BlockedContactWithCallInfoDto>()
-           .ForMember(dest => dest.CallInfo, opt => { 
-               opt.MapFrom(src => src.Calls);
-               opt.NullSubstitute(new CallInfoDto()); //Si src.Call es nulo, utiliza un objeto Call vacío
-           });
-            */
+            
         }
     }
 }

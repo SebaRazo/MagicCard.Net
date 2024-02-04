@@ -9,7 +9,7 @@ namespace WebApplicationAgenda.Models.Dtos
         public string Name { get; set; }
         public int? CelularNumber { get; set; }
         public int? TelephoneNumber { get; set; }
-        public string Description = String.Empty;
+        public string Description { get; set; } = String.Empty;
         public User? User;
         public bool IsBlocked { get; set; }
     }

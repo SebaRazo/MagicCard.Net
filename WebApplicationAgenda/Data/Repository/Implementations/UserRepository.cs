@@ -43,7 +43,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         public async Task<List<User>> GetAll()
         {
             return await _context.Users.ToListAsync(); //obtiene los usuarios en BD y los devuelve como lista   
-        }                //consulta asincrónica
+        }                
 
         public async Task<User> GetById(int userId)
         {

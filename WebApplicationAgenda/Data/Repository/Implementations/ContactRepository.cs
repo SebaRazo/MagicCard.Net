@@ -30,7 +30,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
 
             };
-            await _context.Contacts.AddAsync(new_contact);//Se agrega el nuevo contacto al contexto de la base de datos de manera asincrónica 
+            await _context.Contacts.AddAsync(new_contact);
             await _context.SaveChangesAsync();
             
             await CreateCall(new_contact.Id);
@@ -40,11 +40,11 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
         public async Task Delete(int id)
         {
-            var contact =await _context.Contacts.SingleAsync(c => c.Id == id);//consulta asincrónica para encontrar el contacto en la bd con el ID proporcionado
+            var contact =await _context.Contacts.SingleAsync(c => c.Id == id);
             if (contact != null)
             {
                 _context.Contacts.Remove(contact);
-                await _context.SaveChangesAsync();//se guardan los cambios en la base de datos
+                await _context.SaveChangesAsync();
                 
             }
         }
@@ -73,6 +73,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 contacItem.Name = contac_map.Name;
                 contacItem.CelularNumber = contac_map.CelularNumber;
                 contacItem.TelephoneNumber = contac_map.TelephoneNumber;
+                contacItem.Description = contac_map.Description;//new
 
                 await _context.SaveChangesAsync();
             }
@@ -104,7 +105,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             // Marcar el contacto como bloqueado
             contact.IsBlocked = true;
 
-            // Guardar los cambios en la base de datos
+            
             await _context.SaveChangesAsync();
 
             // Devolver el contacto actualizado
@@ -147,13 +148,6 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
             return contacts;
 
-
-
-            /* return await _context.Contacts
-                 .Include(c => c.Calls)
-                 .Where(c => c.UserId == userId && c.IsBlocked)
-                 .OrderByDescending(c => c.Calls.Sum(call=>call.CountCall)//CountCall)
-                 .ToListAsync();*/
         }
 
         public async Task CreateCall(int contactId)

@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen(setupAction =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "WebApplicationAgendaBearerAuth" } //Tiene que coincidir con el id seteado arriba en la definici�n
+                    Id = "WebApplicationAgendaBearerAuth" } 
                 }, new List<string>() }
     });
     
@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(setupAction =>
     // Add Context
     builder.Services.AddDbContext<AgendaContext>(options =>
     {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion"));  //conexion a la base de datos
+        options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion"));  
     });
 
 
@@ -61,17 +61,8 @@ builder.Services.AddSwaggerGen(setupAction =>
         }
     );
 
-
 //Cors para que el navegador pueda acceder a los endpoints
-/*builder.Services.AddCors(options => options.AddPolicy(name: "FE-Contacts",
-    policy => {
-        policy.WithOrigins("http://localhost:4200")
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    }));*/
-
-
- builder.Services.AddCors(options =>
+builder.Services.AddCors(options =>
       {
           options.AddPolicy(
               name: "AllowOrigin",
@@ -85,27 +76,13 @@ builder.Services.AddSwaggerGen(setupAction =>
 
  
  
- 
-
-
-
-
-
-
-
-
-
-/*builder.Services.AddCors(options => options.AddPolicy("AllowWebapp",
-                                    builder => builder.AllowAnyOrigin()
-                                              .AllowAnyHeader()
-                                              .AllowAnyMethod()));*/
 
 
 var config = new MapperConfiguration(cfg =>
     {
         cfg.AddProfile(new ContactProfile());
         cfg.AddProfile(new UserProfile());
-        //agregar profile CALL
+        
     });
     var mapper = config.CreateMapper();
 
@@ -130,7 +107,7 @@ var config = new MapperConfiguration(cfg =>
 
     app.UseCors("AllowOrigin");
 
-// app.UseCors("AllowWebapp");
+
     app.UseHttpsRedirection();
     app.UseAuthentication();
 

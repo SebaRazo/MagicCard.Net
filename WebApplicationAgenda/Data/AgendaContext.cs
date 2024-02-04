@@ -92,15 +92,6 @@ namespace WebApplicationAgenda.Data
                 //IsBlocked=true,
             };
 
-
-            /*Call pepeCall = new Call
-            {
-                
-                ContactId = pepeC.Id,
-                CountCall = 2,  
-                TimeCall = DateTime.Now.AddHours(-1),  
-            };*/
-
             modelBuilder.Entity<User>().HasData(
                 karen, luis, seba);
 
@@ -108,7 +99,7 @@ namespace WebApplicationAgenda.Data
                  jaimitoC, pepeC, mariaC, juanfer
                  );
 
-            //modelBuilder.Entity<Call>().HasData(pepeCall);
+            
 
 
             //nuevo
@@ -128,9 +119,7 @@ namespace WebApplicationAgenda.Data
             .HasOne(c => c.Contact)
             .WithMany(c => c.Calls)
             .HasForeignKey(c => c.ContactId);
-            /*modelBuilder.Entity<Call>()
-            .Property(c => c.Id)
-            .ValueGeneratedOnAdd();*/
+            
 
 
             base.OnModelCreating(modelBuilder);
