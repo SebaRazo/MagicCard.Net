@@ -18,7 +18,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
         public async Task Create(CreateAndUpdateUser dto)
         {
-            _context.Users.Add(_mapper.Map<User>(dto));//se mapea de dto a user 
+            _context.Users.Add(_mapper.Map<User>(dto));
             await _context.SaveChangesAsync();
         }
 

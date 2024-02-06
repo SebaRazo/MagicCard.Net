@@ -125,7 +125,7 @@ namespace WebApplicationAgenda.Controllers
                 // Manejar el caso en el que no se obtienen contactos bloqueados
                 return NotFound("No se encontraron contactos bloqueados.");
             }
-            var blockedContactDtos = _mapper.Map<List<BlockedContactWithCallInfoDto>>(contacts);//System.NullReferenceException: 'Object reference not set to an instance of an object.'
+            var blockedContactDtos = _mapper.Map<List<BlockedContactWithCallInfoDto>>(contacts);
             return Ok(blockedContactDtos);
             }
             catch (Exception ex)
@@ -173,7 +173,7 @@ namespace WebApplicationAgenda.Controllers
                 return NotFound("No se encontró ninguna llamada con el ID de contacto proporcionado.");
             }
 
-            var callInfoDto = _mapper.Map(call, new CallInfoDto());//<CallInfoDto>(call);//System.NullReferenceException: 'Object reference not set to an instance of an object.'
+            var callInfoDto = _mapper.Map(call, new CallInfoDto());
             if (callInfoDto == null)
             {
                

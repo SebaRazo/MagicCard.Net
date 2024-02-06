@@ -30,7 +30,7 @@ namespace WebApplicationAgenda.Controllers
             
         }
 
-        //authentication
+        
 
         [HttpPost("authenticate")]
         public async Task<ActionResult<string>> Autenticar(AuthenticationRequestBody authenticationRequestBody)
@@ -125,7 +125,7 @@ namespace WebApplicationAgenda.Controllers
         {
             try
             {
-                var userItem= await _userRepository.GetById(id_user);//podria utilizar el UserExists
+                var userItem= await _userRepository.GetById(id_user);
                 if(userItem == null)
                 {
                     return NotFound();

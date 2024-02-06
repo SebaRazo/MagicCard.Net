@@ -102,7 +102,7 @@ namespace WebApplicationAgenda.Data
             
 
 
-            //nuevo
+            
             modelBuilder.Entity<User>()
             .HasMany(u => u.Contacts)
             .WithOne(c => c.User)
