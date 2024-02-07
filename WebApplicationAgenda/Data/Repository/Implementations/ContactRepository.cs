@@ -19,7 +19,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
         public async Task Create(CreateAndUpdateContact dto, int userId)
         {
-            var new_contact = new Contact() //mapeo de dto a Contact
+            var new_contact = new Contact() 
             {
                 CelularNumber = dto.CelularNumber,
                 Description = dto.Description,
@@ -59,8 +59,8 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
         public async Task<List<Contact>> GetAllByUser(int id)
         {
-            return await _context.Contacts.Where(c=> c.UserId == id).ToListAsync();//filtrar los contactos en base al ID del usuario
-        } //se convierte el resultado de la consulta en una lista de contactos y se retorna
+            return await _context.Contacts.Where(c=> c.UserId == id).ToListAsync();
+        } 
 
         public async Task Update(int id, CreateAndUpdateContact dto)
         {
@@ -69,11 +69,11 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
             if(contacItem != null)
             {
-                var contac_map=_mapper.Map<Contact>(dto); //mapea desde dto a Contact
+                var contac_map=_mapper.Map<Contact>(dto); 
                 contacItem.Name = contac_map.Name;
                 contacItem.CelularNumber = contac_map.CelularNumber;
                 contacItem.TelephoneNumber = contac_map.TelephoneNumber;
-                contacItem.Description = contac_map.Description;//new
+                contacItem.Description = contac_map.Description;
 
                 await _context.SaveChangesAsync();
             }
@@ -82,9 +82,9 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
 
 
-        public async Task<List<Contact>> GetBlockedContacts(int userId)//ver
+        public async Task<List<Contact>> GetBlockedContacts(int userId)//sin uso
         {
-            // Obtener la lista de contactos bloqueados para un usuario específico
+            
             var blockedContacts = await _context.Contacts
                 .Where(c => c.UserId == userId && c.IsBlocked)
                 .ToListAsync();
@@ -98,18 +98,16 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
             if (contact == null)
             {
-                // Manejar el caso en el que no se encuentra el contacto
+                
                 throw new InvalidOperationException($"No se encontró un contacto con Id {id} que no esté bloqueado.");
             }
 
-            // Marcar el contacto como bloqueado
+            
             contact.IsBlocked = true;
 
             
             await _context.SaveChangesAsync();
 
-            // Devolver el contacto actualizado
-            //return contact;
         }
         public async Task UnblockContact(int id)
         {
@@ -143,7 +141,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 .Where(c => c.UserId == userId && c.IsBlocked)
                 .ToListAsync();
 
-            // Ordenar la lista de contactos por la cantidad total de llamadas en orden descendente
+           
             contacts = contacts.OrderByDescending(c => c.Calls.Sum(call => call.CountCall)).ToList();
 
             return contacts;

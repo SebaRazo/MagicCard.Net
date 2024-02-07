@@ -25,36 +25,36 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         public async Task Update(int id_user, CreateAndUpdateUser dto)
         {
             var id = id_user;
-            var userItem = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);//consulta asincrónica para obtener el primer usuario con el ID proporcionado
+            var userItem = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             var user_update = dto;
 
-            if (userItem != null)//verifica si se encontró un usuario con el ID proporcionado
+            if (userItem != null)
             {
                 userItem.Name = user_update.Name;
                 userItem.LastName = user_update.LastName;
                 userItem.UserName = user_update.UserName;
                 userItem.Email = user_update.Email;
                 userItem.Password = user_update.Password;
-                //se actualizan las propiedades del userItem con los valores proporcionados en el objeto dto
+                
                 await _context.SaveChangesAsync();
             }
         }
 
         public async Task<List<User>> GetAll()
         {
-            return await _context.Users.ToListAsync(); //obtiene los usuarios en BD y los devuelve como lista   
+            return await _context.Users.ToListAsync();    
         }                
 
         public async Task<User> GetById(int userId)
         {
             return await _context.Users.FindAsync(userId);
-        }                 //consulta asincrónica
+        }                 
 
         public async Task Delete(int id)
         {
             _context.Users.Remove(_context.Users.Single(u => u.Id == id));
-            //consulta asincrónica
-            await _context.SaveChangesAsync();//guarda los cambios en BD
+            
+            await _context.SaveChangesAsync();
         }
 
 

@@ -12,10 +12,10 @@ namespace WebApplicationAgenda.Entities
         public int? CelularNumber { get; set; }
         public int? TelephoneNumber { get; set; }
         public string Description { get; set; } = String.Empty;
-        [ForeignKey("UserId")]// Clave foránea que referencia al usuario dueño de este contacto
+        [ForeignKey("UserId")]
         public User User { get; set; }
-        public int UserId { get; set; }// Identificador del usuario dueño de este contacto
-        public bool IsBlocked { get; set; }//Contacto bloqueado
+        public int UserId { get; set; }
+        public bool IsBlocked { get; set; }
         public List <Call> Calls { get;  set; } = new List<Call>();
 
 

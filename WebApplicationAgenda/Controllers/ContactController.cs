@@ -18,7 +18,7 @@ namespace WebApplicationAgenda.Controllers
         private readonly IContactRepository _contactRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        //inyecta las dependencias 
+        
         public ContactController(IContactRepository contactRepository, IUserRepository userRepository, IMapper mapper)
         {
             _contactRepository = contactRepository;
@@ -62,7 +62,7 @@ namespace WebApplicationAgenda.Controllers
         {
             try
             {
-                //IMPORTANTE USE.CLAIMS
+                
                 int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
                 await _contactRepository.Create(createContactDto, userId);
 
@@ -116,13 +116,13 @@ namespace WebApplicationAgenda.Controllers
         {
             try 
             { 
-            //var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
 
             var contacts = await _contactRepository.FindAllBlockedByUserWithCalls(userId);
             if (contacts == null)
             {
-                // Manejar el caso en el que no se obtienen contactos bloqueados
+                
                 return NotFound("No se encontraron contactos bloqueados.");
             }
             var blockedContactDtos = _mapper.Map<List<BlockedContactWithCallInfoDto>>(contacts);
