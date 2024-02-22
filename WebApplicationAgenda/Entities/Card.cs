@@ -3,22 +3,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplicationAgenda.Entities
 {
-    public class Contact
+    public class Card
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int? CelularNumber { get; set; }
-        public int? TelephoneNumber { get; set; }
-        public string Description { get; set; } = String.Empty;
+        public string Title { get; set; }
+        public string? Image { get; set; }
+        public float? Price { get; set; }
+        public int? CardStock { get; set; }
+        //public string? Description { get; set; } 
         [ForeignKey("UserId")]
         public User User { get; set; }
+        public Sale Sale { get; set; }
         public int UserId { get; set; }
-        public bool IsBlocked { get; set; }
-        public List <Call> Calls { get;  set; } = new List<Call>();
+        public int SaleId { get; set; }
 
-
+        
     }
 }
-

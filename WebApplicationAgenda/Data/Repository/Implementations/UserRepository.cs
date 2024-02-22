@@ -67,6 +67,31 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         {
             return await _context.Users.AnyAsync(u => u.Id == userId);
         }
+
+
+        public async Task<List<ReportUserCardsDto>> GetReportUserCardsAsync()
+        {
+            var users = await _context.Users
+                .Include(u => u.Sales)
+                .Where(u => u.Role == ERole.SELLER && u.Sales.Any())
+                .Select(u => new ReportUserCardsDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    LastName = u.LastName,
+                 /*
+                     public int Id { get; set; }
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public string Title { get; set; }
+        public string? Image { get; set; }
+        public float? Price { get; set; }
+        public int? CardStock { get; set; }*/
+                })
+                .ToListAsync();
+
+            return users;
+        }
     }
 }
 

@@ -12,5 +12,7 @@ namespace WebApplicationAgenda.Data.Repository.Interfaces
         Task Update(int id_user,CreateAndUpdateUser dto);
         Task Delete(int id);
         Task<bool>UserExists(int userId);
+
+        Task<List<ReportUserCardsDto>> GetReportUserCardsAsync();
     }
 }

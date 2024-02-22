@@ -8,9 +8,9 @@ namespace WebApplicationAgenda.Models.Profiles
     {
         public UserProfile()
         {
-            CreateMap<User, CreateAndUpdateUser>();
+            CreateMap<User, CreateAndUpdateSale>();
             CreateMap<User, GetUserByIdReponse>();
-
+            CreateMap<User, UserWithCardInfoDto>();//ver
             CreateMap<CreateAndUpdateUser, User>();
         }
     }

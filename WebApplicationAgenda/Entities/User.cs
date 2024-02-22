@@ -15,7 +15,7 @@ namespace WebApplicationAgenda.Entities
         public string Email { get; set; }
         [Required]
         public string UserName { get; set; }
-        public ICollection<Contact> Contacts { get; set; }
-
+        public ERole Role { get; set; }
+        public ICollection<Sale> Sales { get; set; }
     }
 }

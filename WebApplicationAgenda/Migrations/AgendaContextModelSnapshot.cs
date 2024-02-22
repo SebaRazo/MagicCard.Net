@@ -22,7 +22,7 @@ namespace WebApplicationAgenda.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("WebApplicationAgenda.Entities.Call", b =>
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Card", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,23 +30,35 @@ namespace WebApplicationAgenda.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ContactId")
+                    b.Property<int?>("CardStock")
                         .HasColumnType("int");
 
-                    b.Property<int>("CountCall")
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float?>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<int>("SaleId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("TimeCall")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId");
+                    b.HasIndex("SaleId");
 
-                    b.ToTable("Calls");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Cards");
                 });
 
-            modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Sale", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,21 +66,13 @@ namespace WebApplicationAgenda.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("CelularNumber")
+                    b.Property<int?>("CardId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TelephoneNumber")
+                    b.Property<int?>("Total")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -78,47 +82,7 @@ namespace WebApplicationAgenda.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Contacts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CelularNumber = 341457896,
-                            Description = "Plomero",
-                            IsBlocked = false,
-                            Name = "Jaimito",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CelularNumber = 34156978,
-                            Description = "Papa",
-                            IsBlocked = false,
-                            Name = "Pepe",
-                            TelephoneNumber = 422568,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CelularNumber = 11425789,
-                            Description = "Jefa",
-                            IsBlocked = false,
-                            Name = "Maria",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CelularNumber = 34156,
-                            Description = "?",
-                            IsBlocked = false,
-                            Name = "Juanfer",
-                            TelephoneNumber = 42256,
-                            UserId = 3
-                        });
+                    b.ToTable("Sales");
                 });
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.User", b =>
@@ -145,6 +109,9 @@ namespace WebApplicationAgenda.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -161,6 +128,7 @@ namespace WebApplicationAgenda.Migrations
                             LastName = "Lasot",
                             Name = "Karen",
                             Password = "Pa$$w0rd",
+                            Role = 1,
                             UserName = "karenpiola"
                         },
                         new
@@ -170,6 +138,7 @@ namespace WebApplicationAgenda.Migrations
                             LastName = "Gonzales",
                             Name = "Luis Gonzalez",
                             Password = "lamismadesiempre",
+                            Role = 2,
                             UserName = "luismitoto"
                         },
                         new
@@ -179,40 +148,49 @@ namespace WebApplicationAgenda.Migrations
                             LastName = "Razo",
                             Name = "Seba",
                             Password = "seba",
+                            Role = 0,
                             UserName = "sr"
                         });
                 });
 
-            modelBuilder.Entity("WebApplicationAgenda.Entities.Call", b =>
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Card", b =>
                 {
-                    b.HasOne("WebApplicationAgenda.Entities.Contact", "Contact")
-                        .WithMany("Calls")
-                        .HasForeignKey("ContactId")
+                    b.HasOne("WebApplicationAgenda.Entities.Sale", "Sale")
+                        .WithMany("Cards")
+                        .HasForeignKey("SaleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Contact");
-                });
-
-            modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
-                {
                     b.HasOne("WebApplicationAgenda.Entities.User", "User")
-                        .WithMany("Contacts")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sale");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Sale", b =>
+                {
+                    b.HasOne("WebApplicationAgenda.Entities.User", "User")
+                        .WithMany("Sales")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApplicationAgenda.Entities.Contact", b =>
+            modelBuilder.Entity("WebApplicationAgenda.Entities.Sale", b =>
                 {
-                    b.Navigation("Calls");
+                    b.Navigation("Cards");
                 });
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.User", b =>
                 {
-                    b.Navigation("Contacts");
+                    b.Navigation("Sales");
                 });
 #pragma warning restore 612, 618
         }

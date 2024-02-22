@@ -6,8 +6,8 @@ namespace WebApplicationAgenda.Data
     public class AgendaContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Call> Calls { get; set; }
+        public DbSet<Sale> Sales { get; set; }
+        public DbSet<Card> Cards { get; set; }
 
         public AgendaContext(DbContextOptions<AgendaContext> options) : base(options) //Acá estamos llamando al constructor de DbContext que es el que acepta las opciones
         {
@@ -23,7 +23,9 @@ namespace WebApplicationAgenda.Data
                 LastName = "Lasot",
                 Password = "Pa$$w0rd",
                 Email = "karenbailapiola@gmail.com",
-                UserName = "karenpiola"
+                UserName = "karenpiola",
+                Role = ERole.USER
+
             };
             User seba = new User()
             {
@@ -32,7 +34,8 @@ namespace WebApplicationAgenda.Data
                 LastName = "Razo",
                 Password = "seba",
                 Email = "sr@gmail.com",
-                UserName = "sr"
+                UserName = "sr",
+                Role = ERole.ADMIN
             };
 
             User luis = new User()
@@ -42,84 +45,39 @@ namespace WebApplicationAgenda.Data
                 LastName = "Gonzales",
                 Password = "lamismadesiempre",
                 Email = "elluismidetotoras@gmail.com",
-                UserName = "luismitoto"
+                UserName = "luismitoto",
+                Role = ERole.SELLER
             };
 
-            Contact jaimitoC = new Contact()
-            {
-                Id = 1,
-                Name = "Jaimito",
-                CelularNumber = 341457896,
-                Description = "Plomero",
-                TelephoneNumber = null,
-                UserId = karen.Id,
-                //IsBlocked = true,
-
-                
-            };
-
-            Contact pepeC = new Contact()
-            {
-                Id = 2,
-                Name = "Pepe",
-                CelularNumber = 34156978,
-                Description = "Papa",
-                TelephoneNumber = 422568,
-                UserId = luis.Id,
-                //IsBlocked=false,
-            };
-
-            Contact mariaC = new Contact()
-            {
-                Id = 3,
-                Name = "Maria",
-                CelularNumber = 011425789,
-                Description = "Jefa",
-                TelephoneNumber = null,
-                UserId = karen.Id,
-                //IsBlocked=true,
-                
-            };
-
-            Contact juanfer = new Contact()
-            {
-                Id = 4,
-                Name = "Juanfer",
-                CelularNumber = 34156,
-                Description = "?",
-                TelephoneNumber = 42256,
-                UserId = seba.Id,
-                //IsBlocked=true,
-            };
+  
+        
 
             modelBuilder.Entity<User>().HasData(
                 karen, luis, seba);
 
-            modelBuilder.Entity<Contact>().HasData(
-                 jaimitoC, pepeC, mariaC, juanfer
-                 );
-
+         
             
 
 
             
             modelBuilder.Entity<User>()
-            .HasMany(u => u.Contacts)
+            .HasMany(u => u.Sales)
             .WithOne(c => c.User)
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Contact>()
+            modelBuilder.Entity<Sale>()
             .HasOne(c => c.User)
-            .WithMany(u => u.Contacts)
+            .WithMany(u => u.Sales)
             .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Card>()
+            .HasOne(c => c.Sale)
+            .WithMany(c => c.Cards)
+            .HasForeignKey(c => c.SaleId)
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Call>()
-            .HasOne(c => c.Contact)
-            .WithMany(c => c.Calls)
-            .HasForeignKey(c => c.ContactId);
-            
 
 
             base.OnModelCreating(modelBuilder);

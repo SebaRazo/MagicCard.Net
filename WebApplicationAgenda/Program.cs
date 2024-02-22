@@ -80,7 +80,8 @@ builder.Services.AddCors(options =>
 
 var config = new MapperConfiguration(cfg =>
     {
-        cfg.AddProfile(new ContactProfile());
+        
+        cfg.AddProfile(new SaleProfile());
         cfg.AddProfile(new UserProfile());
         
     });
@@ -90,7 +91,8 @@ var config = new MapperConfiguration(cfg =>
     #region DependencyInjections
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     builder.Services.AddScoped<IUserRepository, UserRepository>();
-    builder.Services.AddScoped<IContactRepository, ContactRepository>();
+    builder.Services.AddScoped<ICardRepository, CardRepository>();
+    builder.Services.AddScoped<ISaleRepository, SaleRepository>();
     builder.Services.AddScoped<IMapper, Mapper>();
     #endregion
 
