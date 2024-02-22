@@ -66,6 +66,12 @@ namespace WebApplicationAgenda.Data
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<User>()
+            .HasMany(u => u.Cards)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Sale>()
             .HasOne(c => c.User)
             .WithMany(u => u.Sales)

@@ -8,9 +8,10 @@ namespace WebApplicationAgenda.Models.Profiles
     {
         public CardProfile()
         {
-            CreateMap<Sale, CreateAndUpdateCard>();
-            CreateMap<CreateAndUpdateCard, Sale>();
-            CreateMap<Sale, SaleInfoDto>();
+            CreateMap<Card, CreateAndUpdateCard>();
+            CreateMap<CreateAndUpdateCard, Card>();
+            CreateMap<Card, CardInfoDto>();
+            CreateMap<CardInfoDto, Card>();
         }
 
     }

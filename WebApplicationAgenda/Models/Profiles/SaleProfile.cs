@@ -11,7 +11,8 @@ namespace WebApplicationAgenda.Models.Profiles
         {
             CreateMap<Sale, CreateAndUpdateSale>();
             CreateMap<CreateAndUpdateSale, Sale>();
-            CreateMap<Card, CardInfoDto>();
+            CreateMap<Sale, SaleInfoDto>();
+            CreateMap<SaleInfoDto, Sale>();
         }
           
         
