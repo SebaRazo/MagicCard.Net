@@ -22,6 +22,21 @@ namespace WebApplicationAgenda.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("CardSale", b =>
+                {
+                    b.Property<int>("CardsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SalesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CardsId", "SalesId");
+
+                    b.HasIndex("SalesId");
+
+                    b.ToTable("CardSale");
+                });
+
             modelBuilder.Entity("WebApplicationAgenda.Entities.Card", b =>
                 {
                     b.Property<int>("Id")
@@ -39,21 +54,11 @@ namespace WebApplicationAgenda.Migrations
                     b.Property<float?>("Price")
                         .HasColumnType("real");
 
-                    b.Property<int>("SaleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SaleId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Cards");
                 });
@@ -153,23 +158,19 @@ namespace WebApplicationAgenda.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WebApplicationAgenda.Entities.Card", b =>
+            modelBuilder.Entity("CardSale", b =>
                 {
-                    b.HasOne("WebApplicationAgenda.Entities.Sale", "Sale")
-                        .WithMany("Cards")
-                        .HasForeignKey("SaleId")
+                    b.HasOne("WebApplicationAgenda.Entities.Card", null)
+                        .WithMany()
+                        .HasForeignKey("CardsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApplicationAgenda.Entities.User", "User")
-                        .WithMany("Cards")
-                        .HasForeignKey("UserId")
+                    b.HasOne("WebApplicationAgenda.Entities.Sale", null)
+                        .WithMany()
+                        .HasForeignKey("SalesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Sale");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WebApplicationAgenda.Entities.Sale", b =>
@@ -183,15 +184,8 @@ namespace WebApplicationAgenda.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApplicationAgenda.Entities.Sale", b =>
-                {
-                    b.Navigation("Cards");
-                });
-
             modelBuilder.Entity("WebApplicationAgenda.Entities.User", b =>
                 {
-                    b.Navigation("Cards");
-
                     b.Navigation("Sales");
                 });
 #pragma warning restore 612, 618

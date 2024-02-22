@@ -29,6 +29,7 @@ namespace WebApplicationAgenda.Controllers
             }
 
             [HttpGet("all")]
+            [Authorize(Roles = "ADMIN")]
             public async Task<IActionResult> GetAll()
             {
                 int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
@@ -37,12 +38,14 @@ namespace WebApplicationAgenda.Controllers
             }
 
             [HttpGet("{id}")]
+            [Authorize(Roles = "ADMIN,SELLER,USER")]
             public async Task<IActionResult> GetOne(int id)
             {
+                
                 try
                 {
-                    int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
-                    List<Sale> sales = await _saleRepository.GetAllByUser(userId);
+                    int uuserId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
+                    List<Sale> sales = await _saleRepository.GetAllByUser(uuserId);
                     Sale sale = sales.FirstOrDefault(x => x.Id == id);
                     if (sale != null)
                     {
@@ -59,6 +62,7 @@ namespace WebApplicationAgenda.Controllers
                 }
             }
             [HttpPost]
+            [Authorize(Roles = "ADMIN,USER")]
             public async Task<IActionResult> CreateSale(CreateAndUpdateSale createSaleDto)
             {
                 try
@@ -80,6 +84,7 @@ namespace WebApplicationAgenda.Controllers
             }
 
             [HttpPut("{id}")]
+            [Authorize(Roles = "ADMIN")]
             public async Task<IActionResult> UpdateSale(int id, CreateAndUpdateSale dto)
             {
                 try
@@ -97,11 +102,12 @@ namespace WebApplicationAgenda.Controllers
 
 
             [HttpDelete("{id}")]
-            public async Task<IActionResult> DeleteSaleById(int id)
+            [Authorize(Roles = "ADMIN")]
+            public async Task<IActionResult> DeleteSaleById(int userId)
             {
                 try
                 {
-                    await _saleRepository.Delete(id);
+                    await _saleRepository.Delete(userId);
                 }
                 catch (Exception ex)
                 {
@@ -111,46 +117,6 @@ namespace WebApplicationAgenda.Controllers
                 return NoContent();
             }
 
-
-            
-
-            //para card
-            /*
-            [HttpGet("getcall/{contactId}")]
-            public async Task<IActionResult> GetCallByContactId(int contactId)
-            {
-                var call = await _contactRepository.GetCallByContactId(contactId);
-
-                if (call == null)
-                {
-                    return NotFound("No se encontró ninguna llamada con el ID de contacto proporcionado.");
-                }
-
-                var callInfoDto = _mapper.Map(call, new CallInfoDto());
-                if (callInfoDto == null)
-                {
-
-                    return BadRequest("Error al mapear la llamada a CallInfoDto.");
-                }
-
-
-                return Ok(callInfoDto);
-            }
-
-
-            [HttpDelete("deletecalls/{contactId}")]
-            public async Task<IActionResult> DeleteCallsByContactId(int contactId)
-            {
-                try
-                {
-                    _contactRepository.DeleteCallsByContactId(contactId);
-                    return Ok("Se eliminaron las llamadas asociadas al ID de contacto proporcionado.");
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }*/
 
         }
     }

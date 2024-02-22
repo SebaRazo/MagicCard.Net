@@ -66,7 +66,7 @@ namespace WebApplicationAgenda.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -83,7 +83,7 @@ namespace WebApplicationAgenda.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "ADMIN,SELLER,USER")]
         [Route("{Id}")]
         public async Task<IActionResult> GetOneById(int Id)
         {
@@ -120,7 +120,7 @@ namespace WebApplicationAgenda.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN,SELLER,USER")]
         public async Task<ActionResult> UpdateUser(int id_user, CreateAndUpdateUser dto)
         {
             try
@@ -142,7 +142,7 @@ namespace WebApplicationAgenda.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN,SELLER,USER")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try

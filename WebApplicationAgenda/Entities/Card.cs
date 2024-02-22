@@ -13,12 +13,12 @@ namespace WebApplicationAgenda.Entities
         public float? Price { get; set; }
         public int? CardStock { get; set; }
         //public string? Description { get; set; } 
-        [ForeignKey("UserId")]
-        public User User { get; set; }
-        public Sale Sale { get; set; }
-        public int UserId { get; set; }
-        public int SaleId { get; set; }
+        //[ForeignKey("UserId")]
+        //public User User { get; set; }
+        //public int UserId { get; set; }
+        public ICollection<Sale> Sales { get; set; }
 
-        
+
+
     }
 }

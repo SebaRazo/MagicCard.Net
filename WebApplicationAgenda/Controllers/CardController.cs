@@ -6,6 +6,7 @@ using WebApplicationAgenda.Data.Repository.Interfaces;
 using WebApplicationAgenda.Entities;
 using WebApplicationAgenda.Models.Dtos;
 
+
 namespace WebApplicationAgenda.Controllers
 {
     [Route("api/[controller]")]
@@ -27,62 +28,58 @@ namespace WebApplicationAgenda.Controllers
             }
 
             [HttpGet("all")]
+            [Authorize(Roles = "ADMIN,USER,SELLER")]
             public async Task<IActionResult> GetAll()
             {
                 int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
-                var cards = await _cardRepository.GetAll(userId);
+                var cards = await _cardRepository.GetAll();
                 return Ok(cards);
             }
 
             [HttpGet("{id}")]
-            public async Task<IActionResult> GetOne(int id)
+            [Authorize(Roles = "ADMIN,USER,SELLER")]    
+            public async Task<IActionResult> GetOneById(int cardId)
             {
-                try
+            try
+            {
+                var Card_Id = await _cardRepository.GetById(cardId);
+
+                if (Card_Id == null)
                 {
-                    int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
-                    List<Card> cards = await _cardRepository.GetAllByUser(userId);
-                    Card card = cards.FirstOrDefault(x => x.Id == id);
-                    if (card != null)
-                    {
-                        return Ok(card);
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                    return NotFound();
                 }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                var dto = _mapper.Map<CardInfoDto>(Card_Id);
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
             }
             [HttpPost]
+            [Authorize(Roles = "ADMIN,SELLER")]
             public async Task<IActionResult> CreateCard(CreateAndUpdateCard createCardDto)
             {
-                try
-                {
-
-                    int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
-                    await _cardRepository.Create(createCardDto, userId);
-
-
-
-                    return Created("Created", createCardDto);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+            try
+            {
+                await _cardRepository.Create(createCardDto);
+                return Created("Created", createCardDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
 
 
             }
 
             [HttpPut("{id}")]
-            public async Task<IActionResult> UpdateCard(int id, CreateAndUpdateCard dto)
+            [Authorize(Roles = "ADMIN,SELLER")]
+            public async Task<IActionResult> UpdateCard(int cardId, CreateAndUpdateCard dto)
             {
                 try
                 {
-                    await _cardRepository.Update(id, dto);
+                    await _cardRepository.Update(cardId, dto);
                     return NoContent();
                 }
                 catch (Exception ex)
@@ -95,11 +92,12 @@ namespace WebApplicationAgenda.Controllers
 
 
             [HttpDelete("{id}")]
-            public async Task<IActionResult> DeleteCardById(int id)
+            [Authorize(Roles = "ADMIN,SELLER")]
+            public async Task<IActionResult> DeleteCardById(int cardId)
             {
                 try
                 {
-                    await _cardRepository.Delete(id);
+                    await _cardRepository.Delete(cardId);
                 }
                 catch (Exception ex)
                 {
@@ -110,44 +108,8 @@ namespace WebApplicationAgenda.Controllers
             }
 
 
+       
             
-            /*
-
-            [HttpGet("getcall/{contactId}")]
-            public async Task<IActionResult> GetCallByCardId(int id)
-            {
-                var call = await _cardRepository.GetCallByCardId(id);
-
-                if (call == null)
-                {
-                    return NotFound("No se encontró ninguna llamada con el ID de contacto proporcionado.");
-                }
-
-                var callInfoDto = _mapper.Map(call, new CardInfoDto());
-                if (callInfoDto == null)
-                {
-
-                    return BadRequest("Error al mapear la llamada a CardInfoDto.");
-                }
-
-
-                return Ok(callInfoDto);
-            }
-
-
-            [HttpDelete("deletecalls/{contactId}")]
-            public async Task<IActionResult> DeleteCallsByContactId(int cardId)
-            {
-                try
-                {
-                    _cardRepository.DeleteCardsByUserId(cardId);
-                    return Ok("Se eliminaron las llamadas asociadas al ID de contacto proporcionado.");
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }*/
 
         }
     }

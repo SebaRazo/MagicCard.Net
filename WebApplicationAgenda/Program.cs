@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using WebApplicationAgenda.Data;
 using WebApplicationAgenda.Data.Repository.Implementations;
@@ -58,6 +60,28 @@ builder.Services.AddSwaggerGen(setupAction =>
                 ValidAudience = builder.Configuration["Authentication:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
             };
+            /////////////////////////////////aca para agregar el rol de usuario para poder ver luego de agarrarlo del front /////////////
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = context =>
+                {
+                    // Agregar el rol como claim adicional al principal del usuario
+                    var identity = context.Principal.Identity as ClaimsIdentity;
+                    if (identity != null)
+                    {
+                        var roleClaim = context.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                        if (roleClaim != null)
+                        {
+                            // Obtener el rol del token y agregarlo como claim adicional
+                            var role = roleClaim.Value;
+                            identity.AddClaim(new Claim(ClaimTypes.Role, role));
+                        }
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+            //////////////////////////////////////////////////
         }
     );
 
@@ -80,7 +104,7 @@ builder.Services.AddCors(options =>
 
 var config = new MapperConfiguration(cfg =>
     {
-        
+        cfg.AddProfile(new CardProfile());
         cfg.AddProfile(new SaleProfile());
         cfg.AddProfile(new UserProfile());
         

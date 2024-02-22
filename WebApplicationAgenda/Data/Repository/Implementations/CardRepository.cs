@@ -17,7 +17,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             _mapper = mapper;
         }
 
-        public async Task Create(CreateAndUpdateCard dto, int userId)
+        public async Task Create(CreateAndUpdateCard dto)
         {
             var new_card = new Card()
             {
@@ -26,7 +26,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
                 Price = dto.Price,
                 Image = dto.Image,
                 CardStock = dto.CardStock,
-                UserId = userId,
+                
 
 
 
@@ -38,9 +38,9 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
 
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int cardId)
         {
-            var card = await _context.Cards.SingleAsync(c => c.Id == id);
+            var card = await _context.Cards.SingleAsync(c => c.Id == cardId);
             if (card != null)
             {
                 _context.Cards.Remove(card);
@@ -49,21 +49,21 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
             }
         }
 
-        public async Task<List<Card>> GetAll(int userId)
+        public async Task<List<Card>> GetAll()
         {
 
-            return await _context.Cards.Where(x => x.UserId == userId).Include(x => x.Sale).ToListAsync();
-        }//revisar
+            return await _context.Cards.ToListAsync();
+        }
 
-        public async Task<List<Card>> GetAllByUser(int id)
+       public async Task<Card> GetById(int cardId)
         {
-            return await _context.Cards.Where(c => c.UserId == id).ToListAsync();
+            return await _context.Cards.FindAsync(cardId);
         }
 
 
-        public async Task Update(int id, CreateAndUpdateCard dto)
+        public async Task Update(int cardId, CreateAndUpdateCard dto)
         {
-            int card_id = id;
+            int card_id = cardId;
             var cardItem = await _context.Cards.FirstOrDefaultAsync(c => c.Id == card_id);
 
             if (card_id != null)
@@ -81,27 +81,7 @@ namespace WebApplicationAgenda.Data.Repository.Implementations
         }
 
        
-        public async Task<Card> GetCardByContactId(int userId)
-        {
-            return await _context.Cards
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-        }
-
-        public async Task DeleteCardByContactId(int userId)
-        {
-            var cards = await _context.Cards
-                .Where(c => c.UserId == userId)
-                .ToListAsync();
-
-            _context.Cards.RemoveRange(cards);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<Card>> FindAllByUserWithCards(int userId)
-        {
-            return await _context.Cards.Where(c => c.UserId == userId).ToListAsync();
-
-        }
+ 
 
 
 

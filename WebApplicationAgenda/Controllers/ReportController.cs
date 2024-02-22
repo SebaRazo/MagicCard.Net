@@ -92,18 +92,18 @@ namespace WebApplicationAgenda.Controllers
                            {
                                table.AddCell(sal.Id.ToString());
                                table.AddCell(sal.Date.ToString());
-                               //table.AddCell(sal.UserId.ToString());
-                              // table.AddCell(sal.UserEmail.ToString());
-                              // table.AddCell(sal.FieldId.ToString());
-                               //table.AddCell(sal.FieldName.ToString());
-                               //table.AddCell(sal.CardPrice.ToString());
+                               table.AddCell(sal.UserId.ToString());
+                               table.AddCell(sal.Email.ToString());
+                               table.AddCell(sal.CardId.ToString());
+                               table.AddCell(sal.Total.ToString());
+                               table.AddCell(sal.Price.ToString());
 
                            }
                            document.Add(table);
                        }
                    }
                }
-               return File(pdfStream.ToArray(), "application/pdf", $"InformeReservas{month}-{year}.pdf");
+               return File(pdfStream.ToArray(), "application/pdf", $"InformeDeVentas{month}-{year}.pdf");
 
            }
        }

@@ -5,17 +5,17 @@ namespace WebApplicationAgenda.Data.Repository.Interfaces
 {
     public interface ICardRepository
     {
-        Task<List<Card>> GetAll(int userId);
-        Task<List<Card>> GetAllByUser(int id);
-        Task Create(CreateAndUpdateCard dto, int userId);
-        Task Update(int id, CreateAndUpdateCard dto);
-        Task Delete(int id);
+        Task<List<Card>> GetAll();
+        Task<Card> GetById(int cardId);
+        Task Create(CreateAndUpdateCard dto);
+        Task Update(int cardId, CreateAndUpdateCard dto);
+        Task Delete(int cardId);
         //estos tres ya estan en sale
-        Task<List<Card>> FindAllByUserWithCards(int userId);
+        //Task<List<Card>> FindAllByUserWithCards(int userId);
 
-        Task<Card> GetCardByContactId(int userId);
+        //Task<Card> GetCardByContactId(int userId);
 
-        Task DeleteCardByContactId(int userId);
+        //Task DeleteCardByContactId(int userId);
 
 
     }

@@ -10,6 +10,22 @@ namespace WebApplicationAgenda.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Cards",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<float>(type: "real", nullable: true),
+                    CardStock = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cards", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -50,31 +66,25 @@ namespace WebApplicationAgenda.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cards",
+                name: "CardSale",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<float>(type: "real", nullable: true),
-                    CardStock = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    SaleId = table.Column<int>(type: "int", nullable: false)
+                    CardsId = table.Column<int>(type: "int", nullable: false),
+                    SalesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cards", x => x.Id);
+                    table.PrimaryKey("PK_CardSale", x => new { x.CardsId, x.SalesId });
                     table.ForeignKey(
-                        name: "FK_Cards_Sales_SaleId",
-                        column: x => x.SaleId,
-                        principalTable: "Sales",
+                        name: "FK_CardSale_Cards_CardsId",
+                        column: x => x.CardsId,
+                        principalTable: "Cards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Cards_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_CardSale_Sales_SalesId",
+                        column: x => x.SalesId,
+                        principalTable: "Sales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -95,14 +105,9 @@ namespace WebApplicationAgenda.Migrations
                 values: new object[] { 3, "sr@gmail.com", "Razo", "Seba", "seba", 0, "sr" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cards_SaleId",
-                table: "Cards",
-                column: "SaleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cards_UserId",
-                table: "Cards",
-                column: "UserId");
+                name: "IX_CardSale_SalesId",
+                table: "CardSale",
+                column: "SalesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sales_UserId",
@@ -112,6 +117,9 @@ namespace WebApplicationAgenda.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CardSale");
+
             migrationBuilder.DropTable(
                 name: "Cards");
 

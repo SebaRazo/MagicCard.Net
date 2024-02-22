@@ -6,10 +6,10 @@ namespace WebApplicationAgenda.Data.Repository.Interfaces
     public interface ISaleRepository
     {
         Task<List<Sale>> GetAll(int userId);
-        Task<List<Sale>> GetAllByUser(int id);
+        Task <List<Sale>> GetAllByUser(int id);
         Task Create(CreateAndUpdateSale dto, int userId);
         Task Update(int id, CreateAndUpdateSale dto);
-        Task Delete(int id);
+        Task Delete(int userId);
 
         Task<List<ReportSalesDto>> SalesInMonth(int month, int year);
 

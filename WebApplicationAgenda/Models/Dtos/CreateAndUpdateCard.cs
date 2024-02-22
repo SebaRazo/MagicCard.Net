@@ -9,8 +9,7 @@ namespace WebApplicationAgenda.Models.Dtos
         public string? Image { get; set; }
         public float? Price { get; set; }
         public int? CardStock { get; set; }
-        public User User ;
-        public Sale Sale;
+        
 
     }
 }
