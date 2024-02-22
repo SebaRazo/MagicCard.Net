@@ -17,7 +17,7 @@ namespace WebApplicationAgenda.Entities
         public string UserName { get; set; }
         public ERole Role { get; set; }
         public ICollection<Sale> Sales { get; set; }
-        //public ICollection<Card> Cards { get; set; }
+        
 
     }
 }

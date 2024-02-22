@@ -16,7 +16,7 @@ namespace WebApplicationAgenda.Entities
         [ForeignKey("UserId")]
         public User User { get; set; }
         public int UserId { get; set; }
-        //public List<Card> Cards { get; set; }
+        
         public ICollection<Card> Cards { get; set; }
     }
 }

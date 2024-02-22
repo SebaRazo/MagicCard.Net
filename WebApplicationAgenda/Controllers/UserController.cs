@@ -45,12 +45,22 @@ namespace WebApplicationAgenda.Controllers
 
             var credentials = new SigningCredentials(securityPassword, SecurityAlgorithms.HmacSha256);
 
-            var claimsForToken = new List<Claim>
+            var claimsForToken = new List<Claim>();
+            claimsForToken.Add(new Claim("sub", user.Id.ToString())); 
+            claimsForToken.Add(new Claim("given_name", user.Name));
+            claimsForToken.Add(new Claim("family_name", user.LastName));
+            claimsForToken.Add(new Claim("role", user.Role.ToString()));
+
+
+
+
+            /*var claimsForToken = new List<Claim>
             {
                 new Claim("sub", user.Id.ToString()),
                 new Claim("given_name", user.Name),
-                new Claim("family_name", user.LastName)
-            };
+                new Claim("family_name", user.LastName),
+                new Claim("role", user.Role.ToString() )
+            };*/
 
             var jwtSecurityToken = new JwtSecurityToken(
                 _config["Authentication:Issuer"],
